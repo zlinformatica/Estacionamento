@@ -1,0 +1,55 @@
+@model IEnumerable<EstacionamentoMvc.Models.MovimentoEstacionamento>
+@{
+    ViewData["Title"] = "Lista de Veículos";
+    bool mostrarTodos = ViewBag.MostrarTodos ?? false;
+}
+<div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+    <h2 class="m-0">Estacionamento</h2>
+    <div class="d-flex gap-2">
+        <a class="btn btn-primary btn-sm" asp-action="Entrada">+ Entrada Veículo</a>
+        <a class="btn btn-outline-secondary btn-sm" asp-action="Index" asp-route-mostrarTodos="@( !mostrarTodos )">
+            @(mostrarTodos ? "Mostrar Abertos" : "Mostrar Todos")
+        </a>
+    </div>
+</div>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Veículo</th>
+            <th>Preço Inicial</th>
+            <th>Preço/Hora</th>
+            <th>Entrada</th>
+            <th>Saída</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var m in Model)
+    {
+        <tr>
+            <td>@m.Id</td>
+            <td>@m.Veiculo</td>
+            <td>@m.PrecoInicial.ToString("C")</td>
+            <td>@m.PrecoPorHora.ToString("C")</td>
+            <td>@m.DataEntrada</td>
+            <td>@(m.DataSaida?.ToString() ?? "—")</td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-info" asp-action="Detalhes" asp-route-id="@m.Id">Detalhes</a>
+                @if (m.DataSaida == null)
+                {
+                    <a class="btn btn-sm btn-success" asp-action="Baixa" asp-route-id="@m.Id">Baixa</a>
+                    <a class="btn btn-sm btn-warning" asp-action="Editar" asp-route-id="@m.Id">Editar</a>
+                }
+                <a class="btn btn-sm btn-outline-danger" asp-action="Excluir" asp-route-id="@m.Id">Excluir</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@if (TempData["Msg"] != null)
+{
+    <div class="alert alert-success">@TempData["Msg"]</div>
+}

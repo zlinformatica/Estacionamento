@@ -1,0 +1,26 @@
+@model EstacionamentoMvc.Models.MovimentoEstacionamento
+@{
+    ViewData["Title"] = "Baixa de Veículo";
+    var sugestao = (int?)ViewBag.MinutosSugestao ?? 60;
+}
+<h2>@ViewData["Title"]</h2>
+
+<div class="mb-3">
+    <strong>Veículo:</strong> @Model.Veiculo <br />
+    <strong>Entrada:</strong> @Model.DataEntrada <br />
+    <strong>Preço Inicial:</strong> @Model.PrecoInicial.ToString("C") <br />
+    <strong>Preço/Hora:</strong> @Model.PrecoPorHora.ToString("C")
+</div>
+
+<form asp-action="Baixa" method="post" class="row g-3">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="col-md-4">
+        <label class="form-label">Tempo Estacionado (minutos)</label>
+        <input type="number" name="minutosPermanencia" class="form-control" value="@sugestao" min="1" required />
+        <div class="form-text">Cobrança por hora/fração (arredondamento pra cima).</div>
+    </div>
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-success">Confirmar Baixa</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>

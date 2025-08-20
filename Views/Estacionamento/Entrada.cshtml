@@ -1,0 +1,28 @@
+@model EstacionamentoMvc.Models.MovimentoEstacionamento
+@{
+    ViewData["Title"] = "Entrada de Veículo";
+}
+<h2>@ViewData["Title"]</h2>
+<form asp-action="Entrada" method="post" class="row g-3">
+    <div class="col-md-4">
+        <label asp-for="Veiculo" class="form-label"></label>
+        <input asp-for="Veiculo" class="form-control" />
+        <span asp-validation-for="Veiculo" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="PrecoInicial" class="form-label"></label>
+        <input asp-for="PrecoInicial" class="form-control" />
+        <span asp-validation-for="PrecoInicial" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="PrecoPorHora" class="form-label"></label>
+        <input asp-for="PrecoPorHora" class="form-control" />
+        <span asp-validation-for="PrecoPorHora" class="text-danger"></span>
+    </div>
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Salvar Entrada</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" /> }
