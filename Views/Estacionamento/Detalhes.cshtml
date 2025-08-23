@@ -1,26 +1,54 @@
 @model EstacionamentoMvc.Models.MovimentoEstacionamento
+
 @{
-    ViewData["Title"] = "Baixa de Veículo";
-    var sugestao = (int?)ViewBag.MinutosSugestao ?? 60;
+    ViewData["Title"] = "Detalhe do VeÃ­culo";
 }
-<h2>@ViewData["Title"]</h2>
 
-<div class="mb-3">
-    <strong>Veículo:</strong> @Model.Veiculo <br />
-    <strong>Entrada:</strong> @Model.DataEntrada <br />
-    <strong>Preço Inicial:</strong> @Model.PrecoInicial.ToString("C") <br />
-    <strong>Preço/Hora:</strong> @Model.PrecoPorHora.ToString("C")
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">
+        <i class="bi bi-car-front-fill text-primary"></i> Detalhe do VeÃ­culo
+    </h2>
+
+    <div class="card shadow-lg p-4">
+        <dl class="row">
+            <dt class="col-sm-3">Placa</dt>
+            <dd class="col-sm-9">@Model.Veiculo</dd>
+
+            <dt class="col-sm-3">PreÃ§o Inicial</dt>
+            <dd class="col-sm-9">R$ @Model.PrecoInicial.ToString("N2")</dd>
+
+            <dt class="col-sm-3">Hora/FraÃ§Ã£o</dt>
+            <dd class="col-sm-9">R$ @Model.PrecoPorHora.ToString("N2")</dd>
+
+            <dt class="col-sm-3">Entrada</dt>
+            <dd class="col-sm-9">@Model.DataEntrada.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+
+            <dt class="col-sm-3">SaÃ­da</dt>
+            <dd class="col-sm-9">
+                @(Model.DataSaida.HasValue ? Model.DataSaida.Value.ToString("dd/MM/yyyy HH:mm:ss") : "Ainda estacionado")
+            </dd>
+
+            <dt class="col-sm-3">Tempo de PermanÃªncia</dt>
+            <dd class="col-sm-9">
+                @{
+                    var saida = Model.DataSaida ?? DateTime.Now;
+                    var permanencia = saida - Model.DataEntrada;
+                    var horas = (int)permanencia.TotalHours;
+                    var minutos = permanencia.Minutes;
+                    @($"{horas}h {minutos}min")
+                }
+                @if (Model.ValorPago > 0)
+                    {
+                        <dt class="col-sm-3">Valor Pago</dt>
+                        <dd class="col-sm-9 text-success fw-bold">R$ @Model.ValorPago.ToString("N2")</dd>
+                    }
+            </dd>
+        </dl>
+
+        <div class="text-center mt-4">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
 </div>
-
-<form asp-action="Baixa" method="post" class="row g-3">
-    <input type="hidden" name="id" value="@Model.Id" />
-    <div class="col-md-4">
-        <label class="form-label">Tempo Estacionado (minutos)</label>
-        <input type="number" name="minutosPermanencia" class="form-control" value="@sugestao" min="1" required />
-        <div class="form-text">Cobrança por hora/fração (arredondamento pra cima).</div>
-    </div>
-    <div class="col-12 d-flex gap-2">
-        <button type="submit" class="btn btn-success">Confirmar Baixa</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-    </div>
-</form>

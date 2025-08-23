@@ -1,26 +1,105 @@
 @model EstacionamentoMvc.Models.MovimentoEstacionamento
-@{
-    ViewData["Title"] = "Baixa de VeÌculo";
-    var sugestao = (int?)ViewBag.MinutosSugestao ?? 60;
-}
-<h2>@ViewData["Title"]</h2>
 
-<div class="mb-3">
-    <strong>VeÌculo:</strong> @Model.Veiculo <br />
-    <strong>Entrada:</strong> @Model.DataEntrada <br />
-    <strong>PreÁo Inicial:</strong> @Model.PrecoInicial.ToString("C") <br />
-    <strong>PreÁo/Hora:</strong> @Model.PrecoPorHora.ToString("C")
+@{
+    ViewData["Title"] = "Confirma√ß√£o de Baixa";
+    var permanencia = ViewBag.Permanencia ?? 0;
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">‚öôÔ∏è Confirmar Baixa</h5>
+        </div>
+        <div class="card-body">
+
+            <dl class="row mb-3">
+                <dt class="col-sm-3">Veiculo</dt>
+                <dd class="col-sm-9">@Model.Veiculo</dd>
+
+                <dt class="col-sm-3">Entrada</dt>
+                <dd class="col-sm-9">@Model.DataEntrada.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">Sa√≠da</dt>
+                <dd class="col-sm-9">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">Perman√™ncia</dt>
+                <dd class="col-sm-9" id="permanenciaText">@((int)permanencia) min</dd>
+
+                <dt class="col-sm-3">Valor Sugerido</dt>
+                <dd class="col-sm-9">R$ <span id="valorSugerido">@Model.PrecoInicial</span></dd>
+
+                <dt class="col-sm-3">Valor Final</dt>
+                <dd class="col-sm-9 fw-bold text-success">R$ <span id="valorFinal">@Model.PrecoInicial</span></dd>
+            </dl>
+
+            <form asp-action="Baixa" method="post" id="formBaixa">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" name="permanenciaTotal" value="@permanencia" />
+                <input type="hidden" name="valorFinal" id="valorFinalInput" value="@Model.PrecoInicial" />
+
+                <!-- Admin -->
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <input name="adminUser" class="form-control" placeholder="Usu√°rio Admin (opcional)" />
+                    </div>
+                    <div class="col-md-6">
+                        <input name="adminPass" type="password" class="form-control" placeholder="Senha Admin (opcional)" />
+                    </div>
+                </div>
+
+                <!-- Ajustes opcionais -->
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <input name="descontoPercentual" id="descontoPercentual" type="number" step="0.1" class="form-control" placeholder="Desconto (%)" />
+                    </div>
+                    <div class="col-md-6">
+                        <input name="descontoMinutos" id="descontoMinutos" type="number" class="form-control" placeholder="Desconto (minutos)" />
+                    </div>
+                </div>
+
+                <!-- Bot√µes -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">‚¨Ö Voltar</a>
+                    <button type="submit" class="btn btn-success">‚úÖ Confirmar Baixa</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
-<form asp-action="Baixa" method="post" class="row g-3">
-    <input type="hidden" name="id" value="@Model.Id" />
-    <div class="col-md-4">
-        <label class="form-label">Tempo Estacionado (minutos)</label>
-        <input type="number" name="minutosPermanencia" class="form-control" value="@sugestao" min="1" required />
-        <div class="form-text">CobranÁa por hora/fraÁ„o (arredondamento pra cima).</div>
-    </div>
-    <div class="col-12 d-flex gap-2">
-        <button type="submit" class="btn btn-success">Confirmar Baixa</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-    </div>
-</form>
+@section Scripts {
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const valorSugerido = parseFloat(document.getElementById("valorSugerido").innerText);
+        const inputPercentual = document.getElementById("descontoPercentual");
+        const inputMinutos = document.getElementById("descontoMinutos");
+        const valorFinalSpan = document.getElementById("valorFinal");
+        const valorFinalInput = document.getElementById("valorFinalInput");
+
+        function calcularValor() {
+            let valorFinal = valorSugerido;
+
+            // Desconto percentual
+            const perc = parseFloat(inputPercentual.value);
+            if (!isNaN(perc) && perc > 0) {
+                valorFinal -= (valorSugerido * (perc / 100));
+            }
+
+            // Desconto em minutos
+            const min = parseFloat(inputMinutos.value);
+            if (!isNaN(min) && min > 0) {
+                const precoHora = @Model.PrecoPorHora;
+                valorFinal -= (precoHora * (min / 60));
+            }
+
+            if (valorFinal < 0) valorFinal = 0;
+
+            valorFinalSpan.innerText = valorFinal.toFixed(2);
+            valorFinalInput.value = valorFinal.toFixed(2);
+        }
+
+        inputPercentual.addEventListener("input", calcularValor);
+        inputMinutos.addEventListener("input", calcularValor);
+    });
+</script>
+}

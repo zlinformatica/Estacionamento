@@ -1,17 +1,12 @@
-using EstacionamentoMvc.Models;
+using Microsoft.EntityFrameworkCore;
+using EstacionamentoMvc.Models; // ajuste o namespace se precisar
 
 namespace EstacionamentoMvc.Data
 {
-	public partial class AppDbContext(AppDbContext.DbContextOptions options) : DbContext(options)
-	{
-        public required DbSet<MovimentoEstacionamento> Movimentos { get; set; }
-    }
-
-    public class DbSet<T>
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
-    }
 
-    public class DbContext
-    {
+        // DbSet representando a tabela
+        public DbSet<MovimentoEstacionamento> Movimentos { get; set; }
     }
 }

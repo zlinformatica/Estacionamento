@@ -1,55 +1,188 @@
 @model IEnumerable<EstacionamentoMvc.Models.MovimentoEstacionamento>
 @{
-    ViewData["Title"] = "Lista de Ve�culos";
+    ViewData["Title"] = "Lista de Veículos";
     bool mostrarTodos = ViewBag.MostrarTodos ?? false;
 }
+
 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-    <h2 class="m-0">Estacionamento</h2>
+    <h2 class="m-0"><h2>🚗 Veículos Cadastrados</h2>
+</h2>
     <div class="d-flex gap-2">
-        <a class="btn btn-primary btn-sm" asp-action="Entrada">+ Entrada Ve�culo</a>
-        <a class="btn btn-outline-secondary btn-sm" asp-action="Index" asp-route-mostrarTodos="@( !mostrarTodos )">
-            @(mostrarTodos ? "Mostrar Abertos" : "Mostrar Todos")
+        <a class="btn btn-primary btn-sm" asp-action="Entrada">+ Entrada Veículo</a>
+        <a class="btn btn-secondary" id="toggleButton" asp-action="Index" asp-route-showAll="true">
+            Mostrar Todos
         </a>
+      <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const showAll = urlParams.get("showAll");
+        const btn = document.getElementById("toggleButton");
+        if (showAll === "true") {
+            btn.textContent = "Mostrar Ativos";
+            btn.setAttribute("href", "?showAll=false");
+        } else {
+            btn.textContent = "Mostrar Todos";
+            btn.setAttribute("href", "?showAll=true");
+        }
+      });
+      </script>
     </div>
 </div>
 
-<table class="table table-striped align-middle">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Ve�culo</th>
-            <th>Pre�o Inicial</th>
-            <th>Pre�o/Hora</th>
-            <th>Entrada</th>
-            <th>Sa�da</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var m in Model)
-    {
-        <tr>
-            <td>@m.Id</td>
-            <td>@m.Veiculo</td>
-            <td>@m.PrecoInicial.ToString("C")</td>
-            <td>@m.PrecoPorHora.ToString("C")</td>
-            <td>@m.DataEntrada</td>
-            <td>@(m.DataSaida?.ToString() ?? "�")</td>
-            <td class="text-end">
-                <a class="btn btn-sm btn-outline-info" asp-action="Detalhes" asp-route-id="@m.Id">Detalhes</a>
-                @if (m.DataSaida == null)
-                {
-                    <a class="btn btn-sm btn-success" asp-action="Baixa" asp-route-id="@m.Id">Baixa</a>
-                    <a class="btn btn-sm btn-warning" asp-action="Editar" asp-route-id="@m.Id">Editar</a>
-                }
-                <a class="btn btn-sm btn-outline-danger" asp-action="Excluir" asp-route-id="@m.Id">Excluir</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<table class="table table-bordered table-hover text-center align-middle shadow-sm">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Veículo</th>
+                <th>Preço Inicial</th>
+                <th>Hora/Fração</th>
+                <th>Entrada</th>
+                <th>Saída</th>
+                <th>Permanência</th>
+                <th>Valor Pago</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Veiculo</td>
+                <td>R$ @item.PrecoInicial.ToString("N2")</td>
+                <td>R$ @item.PrecoPorHora.ToString("N2")</td>
+                <td>@item.DataEntrada.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                <td>@(item.DataSaida.HasValue ? item.DataSaida.Value.ToString("dd/MM/yyyy HH:mm:ss") : "—")</td>
 
+                @if (item.DataSaida.HasValue)
+                {
+                    <td>@item.Permanencia</td>
+                    <td>R$ @item.ValorPago.ToString("N2")</td>
+                }
+                else
+                {
+                    <td>—</td>
+                    <td>—</td>
+                }
+
+                <td style="white-space:nowrap;">
+                  <div class="d-flex gap-1">
+                    <a class="btn btn-info btn-sm" asp-action="Detalhes" asp-route-id="@item.Id">Detalhes</a>
+                    <a class="btn btn-success btn-sm" asp-action="Baixa" asp-route-id="@item.Id">Baixa</a>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                </div>
+            </td>
+
+            </tr>
+        }
+        </tbody>
+    </table>
 @if (TempData["Msg"] != null)
 {
     <div class="alert alert-success">@TempData["Msg"]</div>
+}
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger">@TempData["Erro"]</div>
+}
+
+<!-- 🔹 Modal Confirmar Baixa + Admin -->
+<div class="modal fade" id="modalBaixa" tabindex="-1" aria-labelledby="modalBaixaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form asp-action="Baixa" method="post">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalBaixaLabel">🚗 Confirmar Baixa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+
+        <div class="modal-body">
+          @* antiforgery é injetado automaticamente pelo tag helper em POST *@
+          <input type="hidden" name="id" id="mb-id" />
+
+          <div class="mb-2">
+            <label class="form-label">Veículo</label>
+            <input class="form-control" id="mb-veiculo" readonly />
+          </div>
+
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label">Permanência (min)</label>
+              <input class="form-control" id="mb-minutos" readonly />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Valor a pagar</label>
+              <input class="form-control" id="mb-valor" readonly />
+            </div>
+          </div>
+
+          <hr />
+          <h6>🔐 Ajustes (opcional — somente Admin)</h6>
+          <div class="row g-2">
+            <div class="col-6">
+              <input type="text" name="adminUser" class="form-control" id="mb-adminuser" placeholder="admin" />
+            </div>
+            <div class="col-6">
+              <input type="password" name="adminPass" class="form-control" id="mb-adminpass" placeholder="1234" />
+            </div>
+          </div>
+
+          <div class="row g-2 mt-2">
+            <div class="col-6">
+              <input type="number" step="0.01" name="descontoPercentual" class="form-control" placeholder="Desconto % (opcional)" />
+            </div>
+            <div class="col-6">
+              <input type="number" step="1" name="descontoMinutos" class="form-control" placeholder="Desconto min (opcional)" />
+            </div>
+          </div>
+
+          <small class="text-muted d-block mt-2">
+            Regra: 15 minutos de tolerância. Valor estimado aqui; o valor final é calculado no servidor.
+          </small>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Confirmar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+  // 🔸 Autofoco no usuário admin ao abrir o modal
+  document.getElementById('modalBaixa')
+    .addEventListener('shown.bs.modal', function () {
+      const user = document.getElementById('mb-adminuser');
+      if (user) user.focus();
+    });
+
+  // 🔸 Preenche e calcula ao abrir o modal
+  document.getElementById('modalBaixa')
+    .addEventListener('show.bs.modal', function (event) {
+      const btn = event.relatedTarget;
+      const id = btn.getAttribute('data-id');
+      const veiculo = btn.getAttribute('data-veiculo');
+      const entradaIso = btn.getAttribute('data-entrada');
+      const precoInicial = parseFloat(btn.getAttribute('data-precoinicial') || 0);
+      const precoPorHora = parseFloat(btn.getAttribute('data-precoporhora') || 0);
+
+      // Preenche campos
+      document.getElementById('mb-id').value = id;
+      document.getElementById('mb-veiculo').value = veiculo;
+
+      // Cálculo estimado no cliente (tolerância 15 min)
+      const entrada = new Date(entradaIso);
+      const agora = new Date();
+      const minutosTotais = Math.max(1, Math.ceil((agora - entrada) / 60000));
+      const cobrados = Math.max(0, minutosTotais - 15);
+      const valor = precoInicial + (cobrados / 60) * precoPorHora;
+
+      document.getElementById('mb-minutos').value = minutosTotais.toString();
+      document.getElementById('mb-valor').value = valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    });
+</script>
 }

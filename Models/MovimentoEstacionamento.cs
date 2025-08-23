@@ -1,41 +1,42 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
 namespace EstacionamentoMvc.Models
 {
     public class MovimentoEstacionamento
     {
         public int Id { get; set; }
 
-        [Required, Display(Name = "Veículo/Placa")]
+        [Required, Display(Name = "Veï¿½culo/Placa")]
         public string Veiculo { get; set; } = string.Empty;
-
-        [Display(Name = "Preço Inicial")]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal PrecoInicial { get; set; }
-
-        [Display(Name = "Preço por Hora")]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal PrecoPorHora { get; set; }
 
         [Display(Name = "Entrada")]
         public DateTime DataEntrada { get; set; } = DateTime.Now;
 
-        [Display(Name = "Saída")]
+        [Display(Name = "Saï¿½da")]
         public DateTime? DataSaida { get; set; }
+        public double? Permanencia { get; set; }
 
-        [Display(Name = "Tempo (min) informado na Baixa")]
+        [Display(Name = "PreÃ§o Inicial")]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal PrecoInicial { get; set; }
+
+        [Display(Name = "Preï¿½o por Hora")]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal PrecoPorHora { get; set; }
+
+        [Display(Name = "Permanencia")]
         public int? MinutosPermanencia { get; set; }
 
-        [Display(Name = "Valor Pago")]
+        [Display(Name = "Valor Inicial")]
         [Column(TypeName = "decimal(18,2)")]
-        public decimal? ValorPago { get; set; }
+        public decimal? ValorInicial { get; set; }
+        public double ValorPago { get; set; }
 
-        // Cálculo: Hora/Fração (arredonda pra cima)
+        // Cï¿½lculo: Hora/Fraï¿½ï¿½o (arredonda pra cima)
         public decimal CalcularValor(decimal precoInicial, decimal precoHora, int minutos)
         {
-            var horasCobradas = (decimal)Math.Ceiling(minutos / 60m);
-            return precoInicial + (horasCobradas * precoHora);
+            var ValorPago = (decimal)Math.Ceiling(minutos / 60m);
+            return precoInicial + (ValorPago * precoHora);
         }
     }
 }
