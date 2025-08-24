@@ -3,6 +3,7 @@ using System;
 using EstacionamentoMvc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Estacionamento.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250823150422_AddTarifas")]
+    partial class AddTarifas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -54,23 +57,6 @@ namespace Estacionamento.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Movimentos");
-                });
-
-            modelBuilder.Entity("EstacionamentoMvc.Models.Tarifa", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("TarifaHora")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("TarifaInicial")
-                        .HasColumnType("REAL");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tarifas");
                 });
 #pragma warning restore 612, 618
         }

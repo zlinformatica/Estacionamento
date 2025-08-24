@@ -6,13 +6,13 @@ namespace EstacionamentoMvc.Models
     {
         public int Id { get; set; }
 
-        [Required, Display(Name = "Ve�culo/Placa")]
+        [Required, Display(Name = "Veículo/Placa")]
         public string Veiculo { get; set; } = string.Empty;
 
         [Display(Name = "Entrada")]
         public DateTime DataEntrada { get; set; } = DateTime.Now;
 
-        [Display(Name = "Sa�da")]
+        [Display(Name = "Saída")]
         public DateTime? DataSaida { get; set; }
         public double? Permanencia { get; set; }
 
@@ -20,7 +20,7 @@ namespace EstacionamentoMvc.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal PrecoInicial { get; set; }
 
-        [Display(Name = "Pre�o por Hora")]
+        [Display(Name = "Hora/Fração")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal PrecoPorHora { get; set; }
 
@@ -32,7 +32,7 @@ namespace EstacionamentoMvc.Models
         public decimal? ValorInicial { get; set; }
         public double ValorPago { get; set; }
 
-        // C�lculo: Hora/Fra��o (arredonda pra cima)
+        // Cálculo: Hora/Fração (arredonda pra cima)
         public decimal CalcularValor(decimal precoInicial, decimal precoHora, int minutos)
         {
             var ValorPago = (decimal)Math.Ceiling(minutos / 60m);

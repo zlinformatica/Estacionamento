@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using EstacionamentoMvc.Models;
 using Microsoft.AspNetCore.Mvc;
 using EstacionamentoMvc.Data;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Estacionamento.Controllers
 {
@@ -9,7 +10,7 @@ namespace Estacionamento.Controllers
 	{
 		private readonly AppDbContext _context = context;
 
-        // LISTA (abertos e/ou todos)
+    // LISTA (abertos e/ou todos)
     public async Task<IActionResult> Index(bool showAll = false)
 	{
     var lista = _context.Movimentos.AsQueryable();
@@ -19,11 +20,30 @@ namespace Estacionamento.Controllers
     	}
     	return View(await lista.ToListAsync());
 	}
-		// ENTRADA (Create)
-		public IActionResult Entrada()
-		{
-			return View(new MovimentoEstacionamento());
-		}
+	// ENTRADA (Create)
+     // GET - mostra popup login
+[HttpGet]
+public IActionResult AdminLogin(string? returnUrl = null)
+{
+    ViewData["ReturnUrl"] = returnUrl;
+    return View();
+}
+
+[HttpPost]
+public IActionResult AdminLogin(string usuario, string senha, string? returnUrl = null)
+{
+    if (usuario == "admin" && senha == "123")
+    {
+        HttpContext.Session.SetString("AdminLogado", "true");
+
+        if (!string.IsNullOrEmpty(returnUrl))
+            return Json(new { success = true, redirectUrl = returnUrl });
+
+        return Json(new { success = true, redirectUrl = Url.Action("Index", "Estacionamento") });
+    }
+
+    return Json(new { success = false, message = "Usuário ou senha inválidos!" });
+}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]

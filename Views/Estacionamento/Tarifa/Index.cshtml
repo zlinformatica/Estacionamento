@@ -1,0 +1,24 @@
+@model EstacionamentoMvc.Models.Tarifa
+
+@{
+    ViewData["Title"] = "Configuração de Tarifas";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3">⚙️ Configuração de Tarifas</h2>
+
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Tarifa Inicial</th>
+            <td>R$ @Model.TarifaInicial.ToString("F2")</td>
+        </tr>
+        <tr>
+            <th>Tarifa Hora/Fração</th>
+            <td>R$ @Model.TarifaHora.ToString("F2")</td>
+        </tr>
+    </table>
+
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+        ✏️ Editar Tarifa
+    </a>
+</div>

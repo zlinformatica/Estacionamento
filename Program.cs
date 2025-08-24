@@ -3,7 +3,17 @@ using EstacionamentoMvc.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// builder.Services.AddSession();
+// var app = builder.Build();
+// app.UseSession();
+
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // tempo de expiração
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -18,8 +28,8 @@ if (!app.Environment.IsDevelopment())
 
 ///app.UseHttpsRedirection();
 app.UseStaticFiles();
-//app.UseSession();
 app.UseRouting();
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -27,3 +37,4 @@ app.MapControllerRoute(
     pattern: "{controller=Estacionamento}/{action=Index}/{id?}");
 
 app.Run();
+

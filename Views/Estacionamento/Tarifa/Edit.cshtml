@@ -1,0 +1,55 @@
+@model EstacionamentoMvc.Models.Tarifa
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Editar Tarifa";
+    var isAdmin = HttpContextAccessor.HttpContext.Session.GetString("AdminLogado") == "true";
+}
+
+@if (!isAdmin)
+{
+    <!-- Alerta de bloqueio -->
+    <div class="alert alert-warning mt-3">
+        ⚠️ Apenas administradores podem alterar tarifas.
+    </div>
+
+    <!-- Botão que chama modal de login -->
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#adminLoginModal">
+        Login Administrativo
+    </button>
+
+    <!-- Modal de login -->
+    <div class="modal fade" id="adminLoginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                @* Reutiliza a view AdminLogin como partial, passando a URL de retorno *@
+                @await Html.PartialAsync("~/Views/Estacionamento/AdminLogin.cshtml", new { returnUrl = Url.Action("Edit", "Tarifa", new { id = Model.Id }) })
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Formulário de edição liberado para administradores -->
+    <h2 class="mt-3">Editar Tarifa</h2>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="PrecoInicial" class="form-label"></label>
+            <input asp-for="TarifaInicial" class="form-control" />
+            <span asp-validation-for="TarifaInicial" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="TarifaHora" class="form-label"></label>
+            <input asp-for="TarifaHora" class="form-control" />
+            <span asp-validation-for="TarifaHora" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    </form>
+}
