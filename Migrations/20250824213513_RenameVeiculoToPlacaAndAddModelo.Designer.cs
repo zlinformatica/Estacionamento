@@ -3,6 +3,7 @@ using System;
 using EstacionamentoMvc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Estacionamento.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250824213513_RenameVeiculoToPlacaAndAddModelo")]
+    partial class RenameVeiculoToPlacaAndAddModelo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -35,9 +38,6 @@ namespace Estacionamento.Migrations
                     b.Property<string>("Modelo")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Placa")
-                        .HasColumnType("TEXT");
-
                     b.Property<decimal>("PrecoInicial")
                         .HasColumnType("TEXT");
 
@@ -48,6 +48,9 @@ namespace Estacionamento.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal?>("ValorPago")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Placa")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

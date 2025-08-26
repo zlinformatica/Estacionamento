@@ -4,7 +4,7 @@
 
 @{
     ViewData["Title"] = "Editar Tarifa";
-    var isAdmin = HttpContextAccessor.HttpContext.Session.GetString("AdminLogado") == "true";
+    var isAdmin = HttpContextAccessor.HttpContext?.Session.GetString("AdminLogado") == "true";
 }
 
 @if (!isAdmin)
@@ -38,7 +38,7 @@ else
         <input type="hidden" asp-for="Id" />
 
         <div class="mb-3">
-            <label asp-for="PrecoInicial" class="form-label"></label>
+            <label asp-for="TarifaInicial" class="form-label"></label>
             <input asp-for="TarifaInicial" class="form-control" />
             <span asp-validation-for="TarifaInicial" class="text-danger"></span>
         </div>

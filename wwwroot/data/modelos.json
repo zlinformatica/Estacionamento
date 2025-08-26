@@ -1,0 +1,17 @@
+{
+  "Chevrolet": ["Onix","Onix Plus","Celta","Corsa","Prisma","Monza","Cruze","Spin","Tracker","S10","Montana"],
+  "Volkswagen": ["Gol","Voyage","Polo","Virtus","Fox","Saveiro","T-Cross","Nivus"],
+  "Fiat": ["Uno","Mobi","Argo","Cronos","Palio","Siena","Strada","Toro","Pulse"],
+  "Ford": ["Ka","Ka Sedan","Fiesta","Focus","Fusion","EcoSport","Ranger"],
+  "Toyota": ["Corolla","Etios","Yaris","Hilux"],
+  "Hyundai": ["HB20","HB20S","Creta","Tucson","Santa Fe"],
+  "Renault": ["Kwid","Sandero","Logan","Duster","Oroch"],
+  "Honda": ["Civic","City","Fit","WR-V","HR-V"],
+  "Jeep": ["Renegade","Compass","Commander"],
+  "Nissan": ["March","Versa","Kicks","Frontier"],
+  "Peugeot": ["208","2008","308"],
+  "Citroën": ["C3","C4 Cactus"],
+  "Chery": ["Tiggo 2","Tiggo 3X","Tiggo 5x","Arrizo 5"],
+  "JAC": ["T40","T50","T60"],
+  "Mitsubishi": ["L200","ASX","Outlander","Pajero"]
+}

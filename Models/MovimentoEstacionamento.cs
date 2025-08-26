@@ -1,42 +1,19 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace EstacionamentoMvc.Models
 {
     public class MovimentoEstacionamento
     {
         public int Id { get; set; }
-
-        [Required, Display(Name = "Veículo/Placa")]
-        public string Veiculo { get; set; } = string.Empty;
-
-        [Display(Name = "Entrada")]
-        public DateTime DataEntrada { get; set; } = DateTime.Now;
-
-        [Display(Name = "Saída")]
+        public string? Placa { get; set; }   // antes era "Veiculo"
+        public string? Modelo { get; set; }  // novo campo
+        public DateTime DataEntrada { get; set; }
         public DateTime? DataSaida { get; set; }
-        public double? Permanencia { get; set; }
-
-        [Display(Name = "Preço Inicial")]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal PrecoInicial { get; set; }
-
-        [Display(Name = "Hora/Fração")]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal PrecoPorHora { get; set; }
-
-        [Display(Name = "Permanencia")]
         public int? MinutosPermanencia { get; set; }
-
-        [Display(Name = "Valor Inicial")]
-        [Column(TypeName = "decimal(18,2)")]
+        public decimal PrecoInicial { get; set; }
+        public decimal PrecoPorHora { get; set; }
         public decimal? ValorInicial { get; set; }
-        public double ValorPago { get; set; }
-
-        // Cálculo: Hora/Fração (arredonda pra cima)
-        public decimal CalcularValor(decimal precoInicial, decimal precoHora, int minutos)
-        {
-            var ValorPago = (decimal)Math.Ceiling(minutos / 60m);
-            return precoInicial + (ValorPago * precoHora);
-        }
+        public decimal? ValorPago { get; set; }
     }
 }

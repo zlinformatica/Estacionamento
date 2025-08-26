@@ -50,7 +50,7 @@ namespace Estacionamento.Migrations
                     b.Property<double>("ValorPago")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("Veiculo")
+                    b.Property<string>("Placa")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

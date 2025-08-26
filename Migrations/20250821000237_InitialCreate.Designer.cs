@@ -44,7 +44,7 @@ namespace Estacionamento.Migrations
                     b.Property<decimal?>("ValorPago")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Veiculo")
+                    b.Property<string>("Placa")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

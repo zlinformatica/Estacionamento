@@ -12,7 +12,7 @@
     <div class="card shadow-lg p-4">
         <dl class="row">
             <dt class="col-sm-3">Placa</dt>
-            <dd class="col-sm-9">@Model.Veiculo</dd>
+            <dd class="col-sm-9">@Model.Placa</dd>
 
             <dt class="col-sm-3">Preço Inicial</dt>
             <dd class="col-sm-9">R$ @Model.PrecoInicial.ToString("N2")</dd>
@@ -40,7 +40,8 @@
                 @if (Model.ValorPago > 0)
                     {
                         <dt class="col-sm-3">Valor Pago</dt>
-                        <dd class="col-sm-9 text-success fw-bold">R$ @Model.ValorPago.ToString("N2")</dd>
+                        <dd class="col-sm-9 text-success fw-bold">R$ @(Model.ValorPago.HasValue ? Model.ValorPago.Value.ToString("N2") : "-")
+                        </dd>
                     }
             </dd>
         </dl>
