@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Estacionamento.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250826034345_AjusteTarifaDecimal")]
-    partial class AjusteTarifaDecimal
+    [Migration("20250827214958_SeedTarifaDefault")]
+    partial class SeedTarifaDefault
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,9 +36,12 @@ namespace Estacionamento.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Modelo")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Placa")
+                        .IsRequired()
+                        .HasMaxLength(9)
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("PrecoInicial")
@@ -64,15 +67,23 @@ namespace Estacionamento.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("TarifaHora")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("TarifaHora")
+                        .HasColumnType("TEXT");
 
-                    b.Property<double>("TarifaInicial")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("TarifaInicial")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("Tarifas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            TarifaHora = 3.00m,
+                            TarifaInicial = 5.00m
+                        });
                 });
 #pragma warning restore 612, 618
         }

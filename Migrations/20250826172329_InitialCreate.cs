@@ -17,17 +17,33 @@ namespace Estacionamento.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Veiculo = table.Column<string>(type: "TEXT", nullable: false),
-                    PrecoInicial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PrecoPorHora = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Placa = table.Column<string>(type: "TEXT", nullable: true),
+                    Modelo = table.Column<string>(type: "TEXT", nullable: true),
                     DataEntrada = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DataSaida = table.Column<DateTime>(type: "TEXT", nullable: true),
                     MinutosPermanencia = table.Column<int>(type: "INTEGER", nullable: true),
-                    ValorPago = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
+                    PrecoInicial = table.Column<decimal>(type: "TEXT", nullable: false),
+                    PrecoPorHora = table.Column<decimal>(type: "TEXT", nullable: false),
+                    ValorInicial = table.Column<decimal>(type: "TEXT", nullable: true),
+                    ValorPago = table.Column<decimal>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Movimentos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tarifas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TarifaInicial = table.Column<decimal>(type: "TEXT", nullable: false),
+                    TarifaHora = table.Column<decimal>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tarifas", x => x.Id);
                 });
         }
 
@@ -36,6 +52,9 @@ namespace Estacionamento.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Movimentos");
+
+            migrationBuilder.DropTable(
+                name: "Tarifas");
         }
     }
 }

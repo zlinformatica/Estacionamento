@@ -1,105 +1,51 @@
 @model EstacionamentoMvc.Models.MovimentoEstacionamento
+@using Microsoft.AspNetCore.Http
 
 @{
-    ViewData["Title"] = "Confirmação de Baixa";
-    var permanencia = ViewBag.Permanencia ?? 0;
+    ViewData["Title"] = "Baixa";
+
+    var isAdmin = Context.Session.GetString("AdminLogado") == "true";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">⚙️ Confirmar Baixa</h5>
-        </div>
-        <div class="card-body">
+<h2>Baixa de Veículo</h2>
 
-            <dl class="row mb-3">
-                <dt class="col-sm-3">Veiculo</dt>
-                <dd class="col-sm-9">@Model.Placa</dd>
-
-                <dt class="col-sm-3">Entrada</dt>
-                <dd class="col-sm-9">@Model.DataEntrada.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                <dt class="col-sm-3">Saída</dt>
-                <dd class="col-sm-9">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                <dt class="col-sm-3">Permanência</dt>
-                <dd class="col-sm-9" id="permanenciaText">@((int)permanencia) min</dd>
-
-                <dt class="col-sm-3">Valor Sugerido</dt>
-                <dd class="col-sm-9">R$ <span id="valorSugerido">@Model.PrecoInicial</span></dd>
-
-                <dt class="col-sm-3">Valor Final</dt>
-                <dd class="col-sm-9 fw-bold text-success">R$ <span id="valorFinal">@Model.PrecoInicial</span></dd>
-            </dl>
-
-            <form asp-action="Baixa" method="post" id="formBaixa">
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" name="permanenciaTotal" value="@permanencia" />
-                <input type="hidden" name="valorFinal" id="valorFinalInput" value="@Model.PrecoInicial" />
-
-                <!-- Admin -->
-                <div class="row g-2 mb-3">
-                    <div class="col-md-6">
-                        <input name="adminUser" class="form-control" placeholder="Usuário Admin (opcional)" />
-                    </div>
-                    <div class="col-md-6">
-                        <input name="adminPass" type="password" class="form-control" placeholder="Senha Admin (opcional)" />
-                    </div>
-                </div>
-
-                <!-- Ajustes opcionais -->
-                <div class="row g-2 mb-3">
-                    <div class="col-md-6">
-                        <input name="descontoPercentual" id="descontoPercentual" type="number" step="0.1" class="form-control" placeholder="Desconto (%)" />
-                    </div>
-                    <div class="col-md-6">
-                        <input name="descontoMinutos" id="descontoMinutos" type="number" class="form-control" placeholder="Desconto (minutos)" />
-                    </div>
-                </div>
-
-                <!-- Botões -->
-                <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-secondary">⬅ Voltar</a>
-                    <button type="submit" class="btn btn-success">✅ Confirmar Baixa</button>
-                </div>
-            </form>
-        </div>
-    </div>
+<div class="alert alert-info">
+    <strong>Placa:</strong> @Model.Placa <br />
+    <strong>Modelo:</strong> @Model.Modelo <br />
+    <strong>Entrada:</strong> @Model.DataEntrada.ToString("g") <br />
+    <strong>Permanência (minutos):</strong> @ViewBag.Permanencia <br />
 </div>
 
-@section Scripts {
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const valorSugerido = parseFloat(document.getElementById("valorSugerido").innerText);
-        const inputPercentual = document.getElementById("descontoPercentual");
-        const inputMinutos = document.getElementById("descontoMinutos");
-        const valorFinalSpan = document.getElementById("valorFinal");
-        const valorFinalInput = document.getElementById("valorFinalInput");
+<form asp-action="Baixa" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
 
-        function calcularValor() {
-            let valorFinal = valorSugerido;
+    @if (isAdmin)
+    {
+        @* <div class="form-group">
+            <label for="adminUser">Usuário Admin</label>
+            <input type="text" name="adminUser" class="form-control" />
+        </div>
 
-            // Desconto percentual
-            const perc = parseFloat(inputPercentual.value);
-            if (!isNaN(perc) && perc > 0) {
-                valorFinal -= (valorSugerido * (perc / 100));
-            }
+        <div class="form-group">
+            <label for="adminPass">Senha Admin</label>
+            <input type="password" name="adminPass" class="form-control" />
+        </div> *@
 
-            // Desconto em minutos
-            const min = parseFloat(inputMinutos.value);
-            if (!isNaN(min) && min > 0) {
-                const precoHora = @Model.PrecoPorHora;
-                valorFinal -= (precoHora * (min / 60));
-            }
+        <div class="form-group">
+            <label for="descontoPercentual">Desconto (%)</label>
+            <input type="number" name="descontoPercentual" class="form-control" />
+        </div>
 
-            if (valorFinal < 0) valorFinal = 0;
+        <div class="form-group">
+            <label for="descontoMinutos">Desconto em Minutos</label>
+            <input type="number" name="descontoMinutos" class="form-control" />
+        </div>
+    }
 
-            valorFinalSpan.innerText = valorFinal.toFixed(2);
-            valorFinalInput.value = valorFinal.toFixed(2);
-        }
+        <button type="submit" class="btn btn-success" @(Model.DataSaida != null ? "disabled" : "")>
+        Confirmar Baixa
+        </button>
 
-        inputPercentual.addEventListener("input", calcularValor);
-        inputMinutos.addEventListener("input", calcularValor);
-    });
-</script>
-}
+    @* <button type="submit" class="btn btn-success">Confirmar Baixa</button> *@
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

@@ -6,8 +6,14 @@ namespace EstacionamentoMvc.Models
     public class MovimentoEstacionamento
     {
         public int Id { get; set; }
-        public string? Placa { get; set; }   // antes era "Veiculo"
-        public string? Modelo { get; set; }  // novo campo
+
+        [Required(ErrorMessage = "Informe a placa.")]
+        [StringLength(9, ErrorMessage = "A placa deve ter no máximo 9 caracteres.")]
+        public string? Placa { get; set; }   // removi o ? para forçar preenchimento
+
+        [Required(ErrorMessage = "Informe o modelo.")]
+        public string? Modelo { get; set; }  // removi o ? para forçar preenchimento
+
         public DateTime DataEntrada { get; set; }
         public DateTime? DataSaida { get; set; }
         public int? MinutosPermanencia { get; set; }
@@ -17,3 +23,4 @@ namespace EstacionamentoMvc.Models
         public decimal? ValorPago { get; set; }
     }
 }
+

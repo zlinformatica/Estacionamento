@@ -1,73 +1,33 @@
 @model EstacionamentoMvc.Models.MovimentoEstacionamento
+@using Microsoft.AspNetCore.Http
 
-<div class="container mt-4">
-    <h2>✏️ Editar Veículo</h2>
+@{
+    ViewData["Title"] = "Editar Registro";
+    var isAdmin = Context.Session.GetString("AdminLogado") == "true";
+}
 
-    <!-- Verifica se admin já autenticou -->
-    @* @if (ViewBag.IsAdmin == true) *@
+<h2>Editar Registro</h2>
+
+<form asp-action="Editar" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="form-group">
+        <label>Placa</label>
+        <input type="text" name="placa" class="form-control" value="@Model.Placa" @(isAdmin && Model.DataSaida == null ? "" : "readonly") />
+    </div>
+
+    <div class="form-group">
+        <label>Modelo</label>
+        <input type="text" name="modelo" class="form-control" value="@Model.Modelo" @(isAdmin && Model.DataSaida == null ? "" : "readonly") />
+    </div>
+
+    <button type="submit" class="btn btn-primary" @(isAdmin && Model.DataSaida == null ? "" : "disabled")>Salvar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+
+    @if (!isAdmin)
     {
-        <!-- Edição normal -->
-        <form asp-action="Editar" method="post">
-            <input type="hidden" asp-for="Id" />
-
-            <div class="mb-3">
-                <label asp-for="Placa" class="form-label"></label>
-                <input asp-for="Placa" class="form-control" />
-            </div>
-
-
-            <button type="submit" class="btn btn-success">💾 Salvar</button>
-            <a asp-action="Index" class="btn btn-secondary">↩ Voltar</a>
-        </form>
-
-        <hr />
-
-        <!-- Se admin autenticado → também exibe edição da tarifa -->
-        <h4>⚙️ Ajustar Tarifa</h4>
-        <a asp-controller="Tarifa" asp-action="Edit" asp-route-id="1" class="btn btn-dark">
-            ✏️ Editar Tarifa
-        </a>
+        <div class="alert alert-info mt-3">
+            🔒 Apenas administradores podem alterar Placa e Modelo.
+        </div>
     }
-    else
-    {
-        <!-- Modal login -->
-        <div class="alert alert-warning">🔒 Área restrita - Informe usuário e senha</div>
-
-        <form asp-action="AdminLogin" method="post">
-            <div class="mb-3">
-                <label for="adminUser">Usuário</label>
-                <input type="text" name="adminUser" class="form-control" autofocus />
-            </div>
-            <div class="mb-3">
-                <label for="adminPass">Senha</label>
-                <input type="password" name="adminPass" class="form-control" />
-            </div>
-            <button type="submit" class="btn btn-primary">Entrar</button>
-        </form>
-    } 
-    <script>
-    $(document).ready(function() {
-    $("#loginForm").submit(function(e) {
-        e.preventDefault(); // evita submit normal
-
-        $.post($(this).attr("action"), $(this).serialize(), function(response) {
-            if(response.success) {
-                // Fecha o modal
-                $("#adminLoginModal").hide();
-
-                // Redireciona automaticamente
-                window.location.href = response.redirectUrl;
-            } else {
-                // Mostra mensagem de erro
-                $("#loginMessage").text(response.message);
-            }
-        });
-    });
-
-    // Fechar modal clicando no X
-    $(".close").click(function() {
-        $("#adminLoginModal").hide();
-    });
-});
-</script>
-</div>
+</form>

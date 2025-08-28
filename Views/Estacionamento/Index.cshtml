@@ -68,11 +68,19 @@
                 <td>R$ @(item.ValorPago.HasValue ? item.ValorPago.Value.ToString("N2") : "-")
                 <td class="d-flex gap-2">
                     <a asp-action="Detalhes" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalhes</a>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
                     <a asp-action="Baixa" asp-route-id="@item.Id" class="btn btn-success btn-sm">Baixa</a>
-                    <a asp-action="Excluir" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Excluir</a>
+                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
+                    <a asp-action="Excluir" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Excluir</a> 
+                    @* @if (Context.Session.GetString("AdminLogado") == "true")
+                    {
+                        <a asp-action="Excluir" asp-route-id="@item.Id" class="btn btn-danger">Excluir</a>
+                    } *@
                 </td>
             </tr>
         }
     </tbody>
 </table>
+@if (!Model.Any())
+{
+    <p><em>Nenhum movimento encontrado.</em></p>
+}

@@ -3,9 +3,9 @@ using EstacionamentoMvc.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// builder.Services.AddSession();
-// var app = builder.Build();
-// app.UseSession();
+builder.Services.AddSession();
+//var app = builder.Build();
+//app.UseSession();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>

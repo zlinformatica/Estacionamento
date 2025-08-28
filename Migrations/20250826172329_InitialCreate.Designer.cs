@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Estacionamento.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250825014235_FixPlacaColumn")]
-    partial class FixPlacaColumn
+    [Migration("20250826172329_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,11 +64,11 @@ namespace Estacionamento.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("TarifaHora")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("TarifaHora")
+                        .HasColumnType("TEXT");
 
-                    b.Property<double>("TarifaInicial")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("TarifaInicial")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

@@ -1,15 +1,15 @@
 @model EstacionamentoMvc.Models.MovimentoEstacionamento
 
 @{
-    ViewData["Title"] = "Nova Entrada de Veículo";
+    ViewData["Title"] = "Nova Entrada de Ve�culo";
 }
 
-<h2 class="mb-3">🚗 Nova Entrada</h2>
+<h2 class="mb-3">🚗 Registrar Entrada</h2>
 
 <form asp-action="Entrada" method="post">
-    <div class="mb-3">
-        <label asp-for="Placa" class="form-label">Placa</label>
-        <input asp-for="Placa" class="form-control" placeholder="ABC-1234" />
+    <div class="form-group">
+        <label asp-for="Placa"></label>
+        <input asp-for="Placa" class="form-control" />
         <span asp-validation-for="Placa" class="text-danger"></span>
     </div>
 
@@ -21,23 +21,20 @@
         <span asp-validation-for="Modelo" class="text-danger"></span>
     </div>
 
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <label class="form-label">Tarifa Inicial</label>
-            <input type="text" class="form-control" value="@ViewBag.TarifaInicial" readonly />
-        </div>
-        <div class="col-md-6">
-            <label class="form-label">Tarifa por Hora</label>
-            <input type="text" class="form-control" value="@ViewBag.TarifaHora" readonly />
-        </div>
+    <div class="form-group">
+        <label>Tarifa Inicial</label>
+        <input class="form-control" value="@ViewBag.TarifaInicial" readonly />
     </div>
 
-    <button type="submit" class="btn btn-success">
-        ➕ Registrar Entrada
-    </button>
+    <div class="form-group">
+        <label>Tarifa por Hora</label>
+        <input class="form-control" value="@ViewBag.TarifaHora" readonly />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registrar Entrada</button>
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 </form>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

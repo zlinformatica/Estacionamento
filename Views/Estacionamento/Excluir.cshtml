@@ -1,0 +1,32 @@
+@model EstacionamentoMvc.Models.MovimentoEstacionamento
+@using Microsoft.AspNetCore.Http
+
+@{
+    ViewData["Title"] = "Excluir";
+    var isAdmin = Context.Session.GetString("AdminLogado") == "true";
+}
+
+<h2>Excluir Registro</h2>
+
+<div class="alert alert-warning">
+    <strong>Placa:</strong> @Model.Placa <br />
+    <strong>Modelo:</strong> @Model.Modelo <br />
+    <strong>Entrada:</strong> @Model.DataEntrada.ToString("g") <br />
+    <strong>Saída:</strong> @(Model.DataSaida?.ToString("g") ?? "-") <br />
+</div>
+
+<form asp-action="Excluir" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <button type="submit" class="btn btn-danger" @(isAdmin ? "" : "disabled")>
+        Confirmar Exclusão
+    </button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@if (!isAdmin)
+{
+    <div class="alert alert-info mt-3">
+        🔒 Apenas administradores podem confirmar a exclusão.
+    </div>
+}

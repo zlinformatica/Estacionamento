@@ -25,6 +25,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy"></a>
                         </li>
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">  
+                        @if (Context.Session.GetString("AdminLogado") == "true")                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" asp-controller="Admin" asp-action="Logout">Sair (Admin)</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Login">⚙️ Configurações</a>
+                            </li>
+                        }                                              
+                            @* <a asp-controller="Admin" asp-action="Login" class="nav-link">⚙️ Configurações</a> *@
+                            </li>
+                        </ul>
                     </ul>
                 </div>
             </div>
